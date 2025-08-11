@@ -12,13 +12,13 @@ const app = express();
 app.use(express.json({ limit: '20mb' }));
 
 // --- Multer setup for PDF upload
-const upload = multer({
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
-  fileFilter: (req, file, cb) => {
-    if ((file.mimetype || '').includes('pdf') || file.originalname.toLowerCase().endsWith('.pdf')) cb(null, true);
-    else cb(new Error('Only PDF files are allowed.'));
-  },
-});
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
+async function saveBufferToTmpPDF(file) {
+  if (!file?.buffer) throw new Error('No PDF buffer received');
+  const tmpPath = path.join(os.tmpdir(), `upload-${Date.now()}.pdf`);
+  await fs.writeFile(tmpPath, file.buffer);
+  return tmpPath;
+}
 
 // ---- Zod schema for the data we want to extract (customize to your doc)
 const ExtractedDataSchema = z.object({
@@ -164,7 +164,8 @@ app.post('/extract', upload.single('file'), async (req, res) => {
   try {
     console.log(`Received PDF: ${pdfFile.originalname} (${pdfFile.size} bytes)`);
     // 1) Convert PDF pages to base64 PNGs
-    const pages = await pdfToBase64Pages(pdfFile.path, { density: 220 });
+   const pdfPath = await saveBufferToTmpPDF(req.file);
+    const pages = await pdfToBase64Pages(pdfPath, { density: 220 });
     if (!pages.length) throw new Error('Could not render any pages from PDF.');
 
     // If your PDFs are huge, batch pages to keep payloads smaller:
