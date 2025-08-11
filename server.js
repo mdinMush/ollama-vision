@@ -251,4 +251,5 @@ app.get('/', (_req, res) => res.send('OK'));
 
 const PORT = process.env.PORT || 6020;
 
-app.listen(PORT, () => console.log(`API listening on http://localhost:${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`API listening on http://0.0.0.0:${PORT}`));
+
