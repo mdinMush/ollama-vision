@@ -249,6 +249,6 @@ app.post('/extract', upload.single('file'), async (req, res) => {
 // Basic health route
 app.get('/', (_req, res) => res.send('OK'));
 
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 6020;
 
 app.listen(PORT, () => console.log(`API listening on http://localhost:${PORT}`));
