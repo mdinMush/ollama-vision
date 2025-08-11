@@ -1,11 +1,12 @@
-import express from 'express';
-import multer from 'multer';
-import axios from 'axios';
-import fs from 'fs-extra';
-import path from 'path';
-import os from 'os';
-import { fromPath as pdfToPicFromPath } from 'pdf2pic';
-import { z } from 'zod';
+const express = require('express');
+const multer = require('multer');
+const axios = require('axios');
+const fs = require('fs-extra');
+const path = require('path');
+const os = require('os');
+const { fromPath: pdfToPicFromPath } = require('pdf2pic');
+const { z } = require('zod');
+
 
 const app = express();
 app.use(express.json({ limit: '20mb' }));
