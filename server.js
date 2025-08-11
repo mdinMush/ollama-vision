@@ -162,6 +162,7 @@ app.post('/extract', upload.single('file'), async (req, res) => {
   if (!pdfFile) return res.status(400).json({ error: 'No PDF uploaded. Use form field "file".' });
 
   try {
+    console.log(`Received PDF: ${pdfFile.originalname} (${pdfFile.size} bytes)`);
     // 1) Convert PDF pages to base64 PNGs
     const pages = await pdfToBase64Pages(pdfFile.path, { density: 220 });
     if (!pages.length) throw new Error('Could not render any pages from PDF.');
